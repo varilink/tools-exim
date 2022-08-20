@@ -47,7 +47,15 @@ When you've made your changes to customise Exim to your specific needs, you can 
 docker-compose run --rm test
 ```
 
-This will take you into a bash shell in a container having first run `update-exim4.conf` to apply your customised configuration within that container.
+This will take you into a bash shell in a container having first run `update-exim4.conf` to apply your customised configuration within that container. There you can use the standard Exim provided testing tools; for example:
+
+```bash
+exim -bt recipient@example.com
+```
+
+To test a recipient address for deliverability.
+
+Any custom scripts that you've put into your `src/` folder for testing purpose will also be available to use; for example, if you had a script `test.sh` in there, which looked something like this: 
 
 ```bash
 echo "Sending to recipient@example1.com from sender@example2.com"
@@ -59,3 +67,17 @@ echo "Sending to recipient@example1.com from sender@example2.com"
 	Test sent via the Varilink Exim configuration testing tool.
 EOM
 ```
+
+Then you could run that script via:
+
+```bash
+. /usr/local/src/test.sh
+```
+
+I like to have one or more scripts like this, for different combinations of sender and recipient, which I can use to test send emails and if required pass an optional debugging flag; for example:
+
+```bash
+. /usr/local/src/test.sh -d-all+auth
+```
+
+This will give me debugging output for any custom authentication changes that I've made.
