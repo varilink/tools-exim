@@ -1,0 +1,6 @@
+# Own desktop environment UID and GID
+.env
+# The configuration under test
+/etc
+# Any scripts that you find useful for testing purposes
+/src

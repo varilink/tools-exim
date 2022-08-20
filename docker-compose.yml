@@ -1,0 +1,37 @@
+version: "3.7"
+
+services:
+
+  diff:
+
+    build: build
+    image: varilink/tools/exim4
+    command: exim-conf-diff
+    volumes:
+      - ./etc/exim4/:/confdir/
+
+  init:
+
+    build: build
+    image: varilink/tools/exim4
+    command:
+      - bash
+      - -c
+      - |
+        rm -rf /usr/local/etc/*
+        cp -r /etc/exim4/ /usr/local/etc/
+        cp /etc/mailname /usr/local/etc/
+        chown -R $UID:$GID /usr/local/etc/*
+        chgrp Debian-exim /usr/local/etc/exim4/passwd.client
+    volumes:
+      - ./etc/:/usr/local/etc/
+
+  test:
+
+    build: build
+    image: varilink/tools/exim4
+    entrypoint: bash --init-file /test-init-file
+    volumes:
+      - ./etc/exim4/:/confdir/
+      - ./etc/mailname:/etc/mailname
+      - ./src/:/usr/local/src
